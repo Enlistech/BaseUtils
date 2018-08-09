@@ -2,8 +2,6 @@
 
 [![](https://jitpack.io/v/TheBrownArrow/BaseUtils.svg)](https://jitpack.io/#TheBrownArrow/BaseUtils)
 
-<img src="https://github.com/TheBrownArrow/CustomTypeface/blob/master/screenshot.png" alt text="Screenshot" width="240" height="427" />
-
 # Installation
 
 ### To get a Git project into your build:
