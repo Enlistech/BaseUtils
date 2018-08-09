@@ -24,7 +24,7 @@ Add it in your root build.gradle at the end of repositories:
 ```
 
 # Let us know
-We’d be really happy if you sent us links to your projects where you use our component. Just send an email to <a href="mailto:thebrownarrow@gmail.com">thebrownarrow@gmail.com</a> And do let us know if you have any questions or suggestion regarding the Custom Typeface.
+We’d be really happy if you sent us links to your projects where you use our component. Just send an email to <a href="mailto:thebrownarrow@gmail.com">thebrownarrow@gmail.com</a> And do let us know if you have any questions or suggestion regarding the Base Utils.
 
 # License
 
