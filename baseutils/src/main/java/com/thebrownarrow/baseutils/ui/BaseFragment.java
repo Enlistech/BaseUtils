@@ -12,10 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.thebrownarrow.baseutils.R;
 import com.thebrownarrow.baseutils.util.NetworkUtils;
 
@@ -40,7 +45,6 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        setContent(view);
         setRootView(view);
 
         if (hasAds()) {
@@ -52,6 +56,8 @@ public abstract class BaseFragment extends Fragment {
                     .addTestDevice("41661F52A3C37891FE88331B6E46EFE1") // Moto G5 Plus
                     .build();
         }
+
+        setContent(view);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -116,6 +122,39 @@ public abstract class BaseFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.cancel();
         }
+    }
+
+    public void initializeAds(String adsAppId) {
+        MobileAds.initialize(getActivity(), adsAppId);
+    }
+
+    public void loadBannerAd(int linearLayout, String bannerAdId, AdSize adSize) {
+        AdView adView = new AdView(getActivity());
+        final LinearLayout linearLayoutAdView = getRootView().findViewById(linearLayout);
+
+        adView.setAdUnitId(bannerAdId);
+        adView.setAdSize(adSize);
+        adView.loadAd(adRequest);
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                linearLayoutAdView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                linearLayoutAdView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                linearLayoutAdView.setVisibility(View.VISIBLE);
+            }
+        });
+        linearLayoutAdView.addView(adView);
     }
 
     public void loadInterstitialAd(String interstitialAdId) {
