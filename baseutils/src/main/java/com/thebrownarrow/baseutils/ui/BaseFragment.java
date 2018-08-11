@@ -14,17 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.thebrownarrow.baseutils.R;
 import com.thebrownarrow.baseutils.util.NetworkUtils;
 
 import butterknife.ButterKnife;
 
-import static android.view.View.GONE;
-
 public abstract class BaseFragment extends Fragment {
 
     private View rootView;
     private ProgressDialog mProgressDialog;
+    public InterstitialAd interstitialAd;
+    public AdRequest adRequest;
 
     protected abstract int setFragmentLayout();
 
@@ -39,34 +41,42 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setContent(view);
+        setRootView(view);
+
+        if (hasAds()) {
+            adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("951A389D53ED3891F7FE6B5F981048E8") // Moto G4 Plus
+                    .addTestDevice("13BF45B66CBEA5DD87E3ADF5F941FFE0") // Moto E Ankita
+                    .addTestDevice("1E737E5DD483267E0A5CD5D50786ABA2") // Moto E Jaydip
+                    .addTestDevice("41661F52A3C37891FE88331B6E46EFE1") // Moto G5 Plus
+                    .build();
+        }
+
         super.onViewCreated(view, savedInstanceState);
     }
 
     protected abstract void setContent(View rootView);
 
+    protected boolean hasAds() {
+        return false;
+    }
+
     public boolean isNetworkConnected() {
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
-            showError(getString(R.string.error_internet));
+            showErrorToast(getString(R.string.error_internet));
             return false;
         } else {
             return true;
         }
     }
 
-    public void showError(String errorMsg) {
+    public void showErrorToast(String errorMsg) {
         Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
     }
 
-    public void showSuccess(String successMsg) {
-        Toast.makeText(getActivity(), successMsg, Toast.LENGTH_LONG).show();
-    }
-
-    protected void setVisibleGone(int tv_emptyData) {
-        rootView.findViewById(tv_emptyData).setVisibility(GONE);
-    }
-
-    protected void setVisible(int tv_emptyData) {
-        rootView.findViewById(tv_emptyData).setVisibility(View.VISIBLE);
+    public void showSuccessToast(String successMsg) {
+        Toast.makeText(getActivity(), successMsg, Toast.LENGTH_SHORT).show();
     }
 
     public void setRootView(View rootView) {
@@ -77,16 +87,16 @@ public abstract class BaseFragment extends Fragment {
         return rootView;
     }
 
-    protected RecyclerView setLinearRecyclerView(RecyclerView recyclerView) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+    protected RecyclerView setLinearRecyclerView(RecyclerView recyclerView, boolean reverseLayout) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverseLayout);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         return recyclerView;
     }
 
-    protected RecyclerView setRecyclerView(RecyclerView recyclerView) {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+    protected RecyclerView setRecyclerView(RecyclerView recyclerView, int spanCount) {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -108,8 +118,10 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    public void showToast(String msg) {
-        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+    public void loadInterstitialAd(String interstitialAdId) {
+        interstitialAd = new InterstitialAd(getActivity());
+        interstitialAd.setAdUnitId(interstitialAdId);
+        interstitialAd.loadAd(adRequest);
     }
 
     public void pushFragmentWithBackStack(Fragment DestinationFragment) {
@@ -147,13 +159,4 @@ public abstract class BaseFragment extends Fragment {
         getFragmentManager().popBackStack();
         return true;
     }
-
-//        int Count = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-//        if (Count == 0) {
-//            getActivity().finish();
-//            return true;
-//        } else {
-//            return popFragment(this);
-//        }
-//    }
 }

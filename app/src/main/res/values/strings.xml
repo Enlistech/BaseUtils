@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">BaseUtilsAppllication</string>
+    <string name="app_name">Base Utils Appllication</string>
+
+    <string name="ad_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="banner_ad_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="interstitial_ad_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="interstitial_video_ad_id">ca-app-pub-3940256099942544/8691691433</string>
+    <string name="rewarded_video_id">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="native_advanced_id">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_advanced_video_id">ca-app-pub-3940256099942544/1044960115</string>
 </resources>
