@@ -2,6 +2,7 @@ package com.thebrownarrow.baseutils.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,10 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.thebrownarrow.baseutils.BuildConfig;
 import com.thebrownarrow.baseutils.R;
+import com.thebrownarrow.baseutils.util.AppUtils;
 import com.thebrownarrow.baseutils.util.NetworkUtils;
 
 import butterknife.ButterKnife;
@@ -31,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public int deviceWidth;
     public AdRequest adRequest;
     public InterstitialAd interstitialAd;
+    public RewardedVideoAd rewardedVideoAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +58,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         if (hasAds()) {
-            adRequest = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("951A389D53ED3891F7FE6B5F981048E8") // Moto G4 Plus
-                    .addTestDevice("13BF45B66CBEA5DD87E3ADF5F941FFE0") // Moto E Ankita
-                    .addTestDevice("1E737E5DD483267E0A5CD5D50786ABA2") // Moto E Jaydip
-                    .addTestDevice("41661F52A3C37891FE88331B6E46EFE1") // Moto G5 Plus
-                    .build();
+            if (BuildConfig.DEBUG) {
+                String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                String deviceId = AppUtils.md5(android_id).toUpperCase();
+                adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice(deviceId)
+                        .build();
+            } else {
+                adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
+            }
         }
 
         setContent();
@@ -160,6 +170,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         interstitialAd = new InterstitialAd(this);
         interstitialAd.setAdUnitId(interstitialAdId);
         interstitialAd.loadAd(adRequest);
+    }
+
+    public void initializeRewardedVideoAd() {
+        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+    }
+
+    public void loadRewardedVideoAd(String rewardedVideoAdId) {
+        rewardedVideoAd.loadAd(rewardedVideoAdId, adRequest);
     }
 
     @Override

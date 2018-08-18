@@ -5,6 +5,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
+/**
+ * @author The Brown Arrow.
+ * Email - thebrownarrow@gmail.com
+ */
 public final class NetworkUtils {
 
     public static final int TYPE_WIFI = 1;

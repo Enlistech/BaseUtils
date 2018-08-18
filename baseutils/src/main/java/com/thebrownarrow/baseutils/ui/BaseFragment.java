@@ -2,6 +2,7 @@ package com.thebrownarrow.baseutils.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +23,25 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.thebrownarrow.baseutils.BuildConfig;
 import com.thebrownarrow.baseutils.R;
+import com.thebrownarrow.baseutils.util.AppUtils;
 import com.thebrownarrow.baseutils.util.NetworkUtils;
 
 import butterknife.ButterKnife;
 
+/**
+ * @author The Brown Arrow.
+ * Email - thebrownarrow@gmail.com
+ */
 public abstract class BaseFragment extends Fragment {
 
     private View rootView;
     private ProgressDialog mProgressDialog;
     public InterstitialAd interstitialAd;
     public AdRequest adRequest;
+    public RewardedVideoAd rewardedVideoAd;
 
     protected abstract int setFragmentLayout();
 
@@ -48,13 +58,18 @@ public abstract class BaseFragment extends Fragment {
         setRootView(view);
 
         if (hasAds()) {
-            adRequest = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("951A389D53ED3891F7FE6B5F981048E8") // Moto G4 Plus
-                    .addTestDevice("13BF45B66CBEA5DD87E3ADF5F941FFE0") // Moto E Ankita
-                    .addTestDevice("1E737E5DD483267E0A5CD5D50786ABA2") // Moto E Jaydip
-                    .addTestDevice("41661F52A3C37891FE88331B6E46EFE1") // Moto G5 Plus
-                    .build();
+            if (BuildConfig.DEBUG) {
+                String android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+                String deviceId = AppUtils.md5(android_id).toUpperCase();
+                adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .addTestDevice(deviceId)
+                        .build();
+            } else {
+                adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                        .build();
+            }
         }
 
         setContent(view);
@@ -161,6 +176,14 @@ public abstract class BaseFragment extends Fragment {
         interstitialAd = new InterstitialAd(getActivity());
         interstitialAd.setAdUnitId(interstitialAdId);
         interstitialAd.loadAd(adRequest);
+    }
+
+    public void initializeRewardedVideoAd() {
+        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
+    }
+
+    public void loadRewardedVideoAd(String rewardedVideoAdId) {
+        rewardedVideoAd.loadAd(rewardedVideoAdId, adRequest);
     }
 
     public void pushFragmentWithBackStack(Fragment DestinationFragment) {
