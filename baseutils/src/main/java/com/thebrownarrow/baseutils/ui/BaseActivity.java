@@ -2,7 +2,6 @@ package com.thebrownarrow.baseutils.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +23,6 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.thebrownarrow.baseutils.BuildConfig;
 import com.thebrownarrow.baseutils.R;
-import com.thebrownarrow.baseutils.util.AppUtils;
 import com.thebrownarrow.baseutils.util.NetworkUtils;
 
 import butterknife.ButterKnife;
@@ -59,18 +57,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         if (hasAds()) {
-            if (BuildConfig.DEBUG) {
-                String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-                String deviceId = AppUtils.md5(android_id).toUpperCase();
-                adRequest = new AdRequest.Builder()
-                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .addTestDevice(deviceId)
-                        .build();
-            } else {
-                adRequest = new AdRequest.Builder()
-                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                        .build();
-            }
+            adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("9EBF8E91088F72D589CB4161B66206FF") // JD - Moto G4 Plus
+                    .addTestDevice("C8E9C41B3FEE9E5CACB4388A1B2AFECA") // Anku - Moto G5 Plus
+                    .build();
         }
 
         setContent();
