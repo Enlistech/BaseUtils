@@ -100,6 +100,12 @@ public abstract class BaseFragment extends Fragment {
         Toast.makeText(getActivity(), successMsg, Toast.LENGTH_SHORT).show();
     }
 
+    public void printLog(String tag, String message) {
+        if (BuildConfig.DEBUG) {
+            Log.e(tag, "--------------------------" + message);
+        }
+    }
+
     public void setRootView(View rootView) {
         this.rootView = rootView;
     }

@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -100,6 +101,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showSuccessToast(String successMsg) {
         Toast.makeText(BaseActivity.this, successMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void printLog(String tag, String message) {
+        if (BuildConfig.DEBUG) {
+            Log.e(tag, "--------------------------" + message);
+        }
     }
 
     protected RecyclerView setLinearRecyclerView(RecyclerView recyclerView, boolean reverseLayout) {
