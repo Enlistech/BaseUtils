@@ -105,18 +105,20 @@ public abstract class BaseFragment extends Fragment {
         return rootView;
     }
 
-    protected RecyclerView setLinearRecyclerView(RecyclerView recyclerView, boolean reverseLayout) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, reverseLayout);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setNestedScrollingEnabled(false);
+    protected RecyclerView setLinearRecyclerView(RecyclerView recyclerView, int orientation, boolean reverseLayout,
+                                                 boolean hasFixedSize, boolean nestedScrollingEnabled) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), orientation, reverseLayout);
+        recyclerView.setHasFixedSize(hasFixedSize);
+        recyclerView.setNestedScrollingEnabled(nestedScrollingEnabled);
         recyclerView.setLayoutManager(linearLayoutManager);
         return recyclerView;
     }
 
-    protected RecyclerView setRecyclerView(RecyclerView recyclerView, int spanCount) {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setNestedScrollingEnabled(false);
+    protected RecyclerView setGridRecyclerView(RecyclerView recyclerView, int orientation, boolean reverseLayout, int spanCount,
+                                               boolean hasFixedSize, boolean nestedScrollingEnabled) {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount, orientation, reverseLayout);
+        recyclerView.setHasFixedSize(hasFixedSize);
+        recyclerView.setNestedScrollingEnabled(nestedScrollingEnabled);
         recyclerView.setLayoutManager(gridLayoutManager);
         return recyclerView;
     }
