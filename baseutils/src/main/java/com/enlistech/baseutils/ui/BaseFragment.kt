@@ -60,7 +60,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     val isNetworkConnected: Boolean
-        get() = if (!NetworkUtils.isNetworkConnected(activity)) {
+        get() = if (!NetworkUtils.isNetworkConnected(requireContext())) {
             showErrorToast(getString(R.string.error_internet))
             false
         } else {

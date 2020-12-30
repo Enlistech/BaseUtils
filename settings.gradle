@@ -1,1 +1,2 @@
+include ':nativeAds'
 include ':app', ':baseutils'
